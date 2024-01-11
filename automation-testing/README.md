@@ -2,7 +2,7 @@
 
 ## Aufgabe 1
 
-Wir haben uns für Postman
+Als API-Client haben wir Postman ausgewählt
 
 ### Get all students ✅
 

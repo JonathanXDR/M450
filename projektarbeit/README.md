@@ -2,11 +2,11 @@
 
 ## Testkonzept
 
-### 1. Zusammenfassung (Introduction)
+### 1. Introduction
 
 Die "Proteincounter" App ist eine mobile Anwendung für Android, entwickelt mit Kotlin und Jetpack Compose. Sie ermöglicht Benutzern, ihre Proteinaufnahme zu verfolgen und zu analysieren. Die App besteht aus mehreren Hauptkomponenten: Datenverwaltung (`data`), Benutzeroberfläche (`ui`), Ansichten (`view`) und ViewModels (`viewmodel`), sowie der Hauptaktivität (`MainActivity.kt`).
 
-### 2. Big Picture - System Architektur mit den Test Items
+### 2. Big Picture - System Architecture & Test Items
 
 - **Datenverwaltung (`data`)**: Enthält Klassen für Datenmodelle und Adapter.
 - **Benutzeroberfläche (`ui/theme`)**: Definiert das Erscheinungsbild der App, einschliesslich Farben und Themes.
@@ -26,24 +26,22 @@ Die "Proteincounter" App ist eine mobile Anwendung für Android, entwickelt mit 
 - **Performance und Skalierbarkeit**: In dieser Phase konzentrieren wir uns nicht auf Leistungstests oder Skalierbarkeitstests der App.
 - **Kompatibilität mit allen Android-Versionen**: Testen nur auf den neuesten und gängigsten Android-Versionen.
 
-### 5. Testvorgehen
+### 5. Approach
 
 Da die App bereits grösstenteils fertig ist, werden die Tests erst nach der Entwicklung geschrieben.
 
-### 6. Kriterien für erfolgreiche / nicht-erfolgreiche Tests (optional)
+### 6. Item pass / fail criteria
 
 - **Erfolgreich**: Ein Test gilt als erfolgreich, wenn alle definierten Anforderungen und Funktionen wie erwartet funktionieren.
 - **Nicht erfolgreich**: Tests, die Abstürze, unerwartetes Verhalten oder Fehlfunktionen aufzeigen.
 
-### 7. Testumgebung
+### 7. Environmental Needs
 
-- **Unit-Testing-Frameworks**: Verwendung von JUnit für die Backend-Logik und Espresso für UI-Tests.
+- **Unit-Testing-Frameworks**: [AndroidX Test](https://developer.android.com/training/testing/instrumented-tests/androidx-test-libraries/test-setup)
 - **Tools**: Android Studio für Entwicklung und Testing, Git für Versionskontrolle.
 
-### 8. Kurze Planung
+### 8. Schedule
 
 - **Phase 1**: Erstellung von Unit-Tests für `data` und `viewmodel` Schichten.
 - **Phase 2**: UI-Tests für `view` Komponenten.
 - **Phase 3**: Integrationstests für die Gesamtanwendung.
-
-Das Testkonzept ist ein dynamisches Dokument und kann sich im Laufe des Entwicklungsprozesses ändern, um sich neuen Anforderungen anzupassen.

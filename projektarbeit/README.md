@@ -9,12 +9,12 @@ Die "Proteincounter" App ist eine mobile Anwendung für Android, entwickelt mit 
 ### 2. Big Picture - System Architektur mit den Test Items
 
 - **Datenverwaltung (`data`)**: Enthält Klassen für Datenmodelle und Adapter.
-- **Benutzeroberfläche (`ui/theme`)**: Definiert das Erscheinungsbild der App, einschließlich Farben und Themes.
+- **Benutzeroberfläche (`ui/theme`)**: Definiert das Erscheinungsbild der App, einschliesslich Farben und Themes.
 - **Ansichten (`view`)**: Beinhaltet verschiedene Ansichten der App wie `HistoryView`, `ItemsView`, `TodayView`.
 - **ViewModels (`viewmodel`)**: Umfasst Logik für die Datenverarbeitung und Interaktionen der einzelnen Ansichten.
 - **Hauptaktivität (`MainActivity.kt`)**: Startpunkt der App und verbindet die verschiedenen Komponenten.
 
-### 3. Test Features - welche Elemente getestet werden
+### 3. Features to be tested
 
 - **Datenmodelle und Logik**: Überprüfung der Korrektheit der Datenverarbeitung und -speicherung.
 - **Benutzeroberflächen-Interaktionen**: Testen der UI-Elemente und deren Reaktion auf Benutzereingaben.
@@ -28,7 +28,7 @@ Die "Proteincounter" App ist eine mobile Anwendung für Android, entwickelt mit 
 
 ### 5. Testvorgehen
 
-Die App wird nach dem TDD-Ansatz (Test Driven Development) entwickelt, wobei zunächst Tests für eine Funktion geschrieben und anschließend die Funktionalität implementiert wird.
+Da die App bereits grösstenteils fertig ist, werden die Tests erst nach der Entwicklung geschrieben.
 
 ### 6. Kriterien für erfolgreiche / nicht-erfolgreiche Tests (optional)
 

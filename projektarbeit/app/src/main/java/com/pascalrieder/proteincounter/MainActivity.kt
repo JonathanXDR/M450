@@ -26,23 +26,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.compose.AppTheme
-import com.pascalrieder.proteincounter.data.DataProvider
+import com.google.gson.GsonBuilder
+import com.google.gson.reflect.TypeToken
+import com.pascalrieder.proteincounter.data.LocalDateAdapter
+import com.pascalrieder.proteincounter.database.AppDatabase
+import com.pascalrieder.proteincounter.database.models.Item
+import com.pascalrieder.proteincounter.repository.ItemRepository
 import com.pascalrieder.proteincounter.view.HistoryView
 import com.pascalrieder.proteincounter.view.ItemsView
 import com.pascalrieder.proteincounter.view.TodayView
 import com.pascalrieder.proteincounter.viewmodel.HistoryViewModel
 import com.pascalrieder.proteincounter.viewmodel.ItemsViewModel
 import com.pascalrieder.proteincounter.viewmodel.TodayViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        DataProvider.loadData(context = this)
+        insertItems()
 
         setContent {
             AppTheme {
@@ -83,7 +92,14 @@ class MainActivity : ComponentActivity() {
                     }, snackbarHost = {
                         SnackbarHost(hostState = historyViewModel.snackbarHostState.value)
                     }, floatingActionButton = {
-                        FloatingActionButton(onClick = { todayViewModel.onFloatingActionButtonClick?.let { it() } },
+                        FloatingActionButton(onClick = {
+                            if (navController.currentBackStackEntry?.destination?.route == "today")
+                                todayViewModel.onFabClick()
+                            else if (navController.currentBackStackEntry?.destination?.route == "history")
+                                historyViewModel.onFabClick()
+                            else if (navController.currentBackStackEntry?.destination?.route == "items")
+                                itemsViewModel.onFabClick()
+                        },
                             content = {
                                 Icon(
                                     imageVector = Icons.Default.Add, contentDescription = "Add Icon"
@@ -95,11 +111,36 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    override fun onStop() {
-        super.onStop()
-        DataProvider.saveData(context = this)
+    private val gson =
+        GsonBuilder().registerTypeAdapter(LocalDate::class.java, LocalDateAdapter()).create()
+
+    fun insertItems() {
+        // Get repo
+        val itemDao = AppDatabase.getDatabase(application).itemDao()
+        val itemRepo = ItemRepository(itemDao)
+
+        // Check if items are already inserted
+        itemRepo.readAllData.observe(this@MainActivity) { items ->
+            if (items.isEmpty()) {
+                // Get items from resources
+                val jsonString =
+                    resources.openRawResource(R.raw.nutritionvalues).bufferedReader().readText()
+                val mutableListTutorialType = object : TypeToken<MutableList<Item>>() {}.type
+                val additionalItems =
+                    gson.fromJson<MutableList<Item>>(jsonString, mutableListTutorialType)
+
+                // Insert items into database
+                additionalItems.forEach {
+                    lifecycleScope.launch(Dispatchers.IO) {
+
+                        itemRepo.addItem(it)
+                    }
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 private fun BottomBar(navController: NavHostController) {

@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.pascalrieder.proteincounter.R
 import com.pascalrieder.proteincounter.viewmodel.TodayViewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.platform.testTag
 import com.pascalrieder.proteincounter.database.dto.ItemFromDay
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -150,6 +151,7 @@ fun TodayView(viewModel: TodayViewModel) {
             }, text = {
                 Column {
                     OutlinedTextField(
+                        modifier = Modifier.testTag("txt_kcal_goal"),
                         label = { Text(text = "Kcal goal") },
                         value = viewModel.dialogKcalGoal,
                         onValueChange = viewModel::updateDialogKcalGoal,
@@ -181,6 +183,7 @@ fun TodayView(viewModel: TodayViewModel) {
             }, text = {
                 Column {
                     OutlinedTextField(
+                        modifier = Modifier.testTag("txt_protein_goal"),
                         label = { Text(text = "Protein goal") },
                         value = viewModel.dialogProteinGoal,
                         onValueChange = viewModel::updateDialogProteinGoal,
@@ -216,7 +219,7 @@ fun TodayView(viewModel: TodayViewModel) {
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                NutrientItem(modifier = Modifier.weight(1f),
+                NutrientItem(modifier = Modifier.weight(1f), testTag = "btn_edit_protein",
                     painter = painterResource(R.drawable.ic_grocery),
                     title = {
                         Text(
@@ -225,20 +228,9 @@ fun TodayView(viewModel: TodayViewModel) {
                     },
                     text = {
                         Text(
-                            buildAnnotatedString {
-                                append("You've consumed \n")
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append(
-                                        String.format("%.0f", dayWithItems?.getProteinTotal())
-                                            .replace(".0", "")
-                                    )
-                                }
-                                append(" of ")
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append(viewModel.proteinGoal.toString())
-                                }
-                                append(" g Protein.")
-                            }, style = MaterialTheme.typography.bodyMedium
+
+                            "You've consumed ${viewModel.proteinGoal.toString()} g of Protein.",
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     onEdit = {
@@ -248,25 +240,13 @@ fun TodayView(viewModel: TodayViewModel) {
 
 
 
-                NutrientItem(modifier = Modifier.weight(1f),
+                NutrientItem(modifier = Modifier.weight(1f),testTag = "btn_edit_kcal",
                     painter = painterResource(R.drawable.ic_lunch_dining),
                     title = { Text(style = MaterialTheme.typography.titleMedium, text = "Kcal") },
                     text = {
                         Text(
-                            buildAnnotatedString {
-                                append("You've consumed \n")
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append(
-                                        String.format("%.0f", dayWithItems?.getKcalTotal())
-                                            .replace(".0", "")
-                                    )
-                                }
-                                append(" of ")
-                                withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
-                                    append(viewModel.kcalGoal.toString())
-                                }
-                                append(" kcal.")
-                            }, style = MaterialTheme.typography.bodyMedium
+                            "You've consumed ${viewModel.kcalGoal.toString()} Kcal.",
+                            style = MaterialTheme.typography.bodyMedium
                         )
                     },
                     onEdit = {
@@ -292,7 +272,8 @@ fun NutrientItem(
     title: @Composable () -> Unit,
     text: @Composable () -> Unit,
     painter: Painter,
-    onEdit: () -> Unit = {}
+    onEdit: () -> Unit = {},
+    testTag: String = ""
 ) {
     Column(
         modifier = Modifier
@@ -306,11 +287,17 @@ fun NutrientItem(
             Icon(
                 painter = painter, contentDescription = "Info Icon", modifier = Modifier.size(24.dp)
             )
-            IconButton(modifier = Modifier.size(24.dp), onClick = onEdit) {
+            IconButton(
+                modifier = Modifier
+                    .size(24.dp)
+                    .testTag(testTag), onClick = onEdit
+            ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_edit),
                     contentDescription = "Edit",
-                    modifier = Modifier.size(15.dp)
+                    modifier = Modifier
+                        .size(15.dp)
+
                 )
             }
         }

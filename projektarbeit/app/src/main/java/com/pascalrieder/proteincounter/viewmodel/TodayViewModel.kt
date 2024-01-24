@@ -3,6 +3,7 @@ package com.pascalrieder.proteincounter.viewmodel
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -57,7 +58,7 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
                         )
                     )
                 } catch (e: Exception) {
-                    println(e)
+                    Log.e( "TodayViewModel", "Error while adding day", e)
                 }
             }
         })

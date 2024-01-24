@@ -13,6 +13,8 @@ class MainActivityTests {
     * This error exists when the main activity launches and there are multiple attempts to insert
     * a day with the today's date. The error gets throws because the date is unique and
     * cant be inserted multiple times. It needs to get fixed but has nothing to do with the ui tests.
+    *
+    * Edit: The error gets caught and logged
     */
 
     @get:Rule

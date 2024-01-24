@@ -1,5 +1,6 @@
 package com.m335pascal.repository
 
+import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.pascalrieder.proteincounter.database.dao.DayDao
@@ -8,6 +9,7 @@ import com.pascalrieder.proteincounter.database.dto.DayWithItemsDb
 import com.pascalrieder.proteincounter.database.dto.ItemFromDay
 import com.pascalrieder.proteincounter.database.models.DayItem
 import java.time.LocalDate
+import kotlin.jvm.Throws
 
 class DayRepository(private val dayDao: DayDao) {
     private val allDaysWithItems: MediatorLiveData<List<DayWithItems>> = MediatorLiveData()
@@ -48,6 +50,7 @@ class DayRepository(private val dayDao: DayDao) {
         )
     }
 
+    @Throws(SQLiteConstraintException::class)
     suspend fun addDay(day: DayWithItems) {
         val a = dayDao.addDay(day.toDay())
         day.items.forEach {

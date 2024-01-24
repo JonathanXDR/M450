@@ -1,8 +1,10 @@
 package com.pascalrieder.proteincounter.viewmodel
 
 import android.app.Application
-import android.os.Handler
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.AndroidViewModel
@@ -52,21 +54,101 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
         })
     }
 
-    fun insertItem(itemId: Long) = viewModelScope.launch(Dispatchers.IO) {
+    private val sharedPref: SharedPreferences = getApplication<Application>().getSharedPreferences(
+        "com.pascalrieder.proteincounter", Context.MODE_PRIVATE
+    )
+    private val kcalGoalName = "kcalGoal"
+    private val proteinGoalName = "proteinGoal"
+
+
+    var kcalGoal by mutableIntStateOf(2000)
+    var proteinGoal by mutableIntStateOf(100)
+
+    fun setKcalGoalValue(value: Int) {
+        kcalGoal = value
+
+        with(sharedPref.edit()) {
+            putInt(kcalGoalName, value)
+            apply()
+        }
+    }
+
+
+    var dialogKcalGoal by mutableStateOf("")
+    fun updateDialogKcalGoal(value: String) {
+        if (value == "") {
+            dialogKcalGoal = ""
+            return
+        }
+        val number = value.filter { it.isDigit() }
+        val intOrNull = number.toIntOrNull() ?: return
+        if (intOrNull > 99999) return
+        dialogKcalGoal = intOrNull.toString()
+    }
+
+    fun onSetKcalGoalClick() {
+        if (dialogKcalGoal == "") return
+        val intOrNull = dialogKcalGoal.toIntOrNull() ?: return
+        setKcalGoalValue(intOrNull)
+        dialogKcalGoal = ""
+    }
+
+    fun setProteinGoalValue(value: Int) {
+        proteinGoal = value
+
+        with(sharedPref.edit()) {
+            putInt(proteinGoalName, value)
+            apply()
+        }
+    }
+
+    var dialogProteinGoal by mutableStateOf("")
+    fun updateDialogProteinGoal(value: String) {
+        if (value == "") {
+            dialogProteinGoal = ""
+            return
+        }
+        val number = value.filter { it.isDigit() }
+        val intOrNull = number.toIntOrNull() ?: return
+        if (intOrNull > 99999) return
+        dialogProteinGoal = intOrNull.toString()
+    }
+
+    fun onSetProteinGoalClick() {
+        if (dialogProteinGoal == "") return
+        val intOrNull = dialogProteinGoal.toIntOrNull() ?: return
+        setProteinGoalValue(intOrNull)
+        dialogProteinGoal = ""
+    }
+
+    init {
+        kcalGoal = sharedPref.getInt(kcalGoalName, 2000)
+        proteinGoal = sharedPref.getInt(proteinGoalName, 100)
+    }
+
+
+    fun insertItemClick(itemId: Long) {
         if (amountInGram.isEmpty()) errorMessage = "Please enter an amount"
         else {
-            dayRepository.addItemToDay(
-                DayItem(
-                    dayId = dayWithItems.value!!.dayId,
-                    itemId = itemId,
-                    amountInGram = amountInGram.toFloat(),
-                    isDeleted = false
-                )
-            )
+            insertItem(itemId, amountInGram.toFloat())
+            amountInGram = ""
+            searchText = ""
             errorMessage = ""
             openBottomSheet = false
         }
     }
+
+    fun insertItem(itemId: Long, amountInGram: Float) = viewModelScope.launch(Dispatchers.IO) {
+        dayRepository.addItemToDay(
+            DayItem(
+                dayId = dayWithItems.value!!.dayId,
+                itemId = itemId,
+                amountInGram = amountInGram,
+                isDeleted = false
+            )
+        )
+    }
+
 
     fun removeItemFromToday(item: ItemFromDay) = viewModelScope.launch(Dispatchers.IO) {
         dayRepository.removeItemFromDay(dayWithItems.value!!.dayId, item.itemId)
@@ -80,5 +162,4 @@ class TodayViewModel(application: Application) : AndroidViewModel(application) {
             false
         }
     }
-
 }

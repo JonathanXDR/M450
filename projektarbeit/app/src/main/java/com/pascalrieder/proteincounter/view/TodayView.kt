@@ -61,7 +61,7 @@ fun TodayView(viewModel: TodayViewModel) {
                         contentDescription = "Search Icon"
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                    OutlinedTextField(modifier = Modifier.fillMaxWidth().testTag("consumedAmount"),
                         label = { Text(text = "Consumed amount in gram") },
                         value = viewModel.amountInGram,
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
@@ -107,7 +107,7 @@ fun TodayView(viewModel: TodayViewModel) {
                             .padding(24.dp)
                             .clickable {
                                 viewModel.insertItemClick(item.uid)
-                            }) {
+                            }.testTag("item_${item.uid}")) {
                             Text(
                                 style = MaterialTheme.typography.headlineSmall,
                                 text = item.name,

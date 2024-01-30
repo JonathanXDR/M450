@@ -2,7 +2,7 @@ package com.pascalrieder.proteincounter
 
 import androidx.compose.ui.test.assertHasClickAction
 import androidx.compose.ui.test.assertIsDisplayed
-import androidx.compose.ui.test.assertTextContains
+import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.isDisplayed
 import androidx.compose.ui.test.isNotDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
@@ -12,7 +12,6 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Rule
 import org.junit.Test
 
@@ -35,7 +34,6 @@ class TodayViewTest {/*
             composeTestRule.onNodeWithText("Day not found").isNotDisplayed()
         }
     }
-
 
     @Test
     fun `Check if FAB exists`() {
@@ -73,5 +71,14 @@ class TodayViewTest {/*
         // Assert that the item is displayed in the view
         composeTestRule.waitUntil(1000) { composeTestRule.onNodeWithText("150g").isDisplayed() }
         composeTestRule.onNodeWithText("150g").assertIsDisplayed()
+    }
+    @Test
+    fun `Check if a new item can get deleted`() {
+        // Expant item
+        composeTestRule.onNodeWithTag("btn_expand_item_1").assertIsDisplayed().performClick()
+
+        // Assert that item can be deleted
+        composeTestRule.onNodeWithTag("btn_delete_item_1").assertIsDisplayed().performClick()
+        composeTestRule.onNodeWithText("150g").assertIsNotDisplayed()
     }
 }

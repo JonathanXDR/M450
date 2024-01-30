@@ -14,7 +14,7 @@ import androidx.lifecycle.viewModelScope
 import com.pascalrieder.proteincounter.database.AppDatabase
 import com.pascalrieder.proteincounter.database.dto.DayWithItems
 import com.pascalrieder.proteincounter.database.dto.ItemFromDay
-import com.m335pascal.repository.DayRepository
+import com.pascalrieder.proteincounter.repository.DayRepository
 import com.pascalrieder.proteincounter.database.models.DayItem
 import com.pascalrieder.proteincounter.database.models.Item
 import com.pascalrieder.proteincounter.repository.ItemRepository

@@ -1,4 +1,4 @@
-package com.m335pascal.repository
+package com.pascalrieder.proteincounter.repository
 
 import android.database.sqlite.SQLiteConstraintException
 import androidx.lifecycle.LiveData
@@ -65,29 +65,27 @@ open class DayRepository(private val dayDao: DayDao) {
 
             if (existingDay == null) {
                 val newDay = DayWithItems(dbDay.dayId, dbDay.date, mutableListOf())
-                if (dbDay.itemId != null && !dbDay.isDeleted!!) newDay.items.add(
-                    ItemFromDay(
-                        itemId = dbDay.itemId,
-                        name = dbDay.name.orEmpty(),
-                        proteinContentPercentage = dbDay.proteinContentPercentage ?: 0.0f,
-                        kcalContentIn100g = dbDay.kcalContentIn100g ?: 0.0f,
-                        amountInGram = dbDay.amountInGram ?: 0.0f
-                    )
-                )
+                if (dbDay.itemId != null && !(dbDay.isDeleted ?: false)) {
+                    newDay.items.add(dbDay.toItemFromDay())
+                }
                 days.add(newDay)
             } else {
-                if (dbDay.itemId != null && !dbDay.isDeleted!!) existingDay.items.add(
-                    ItemFromDay(
-                        itemId = dbDay.itemId ?: 0,
-                        name = dbDay.name.orEmpty(),
-                        proteinContentPercentage = dbDay.proteinContentPercentage ?: 0.0f,
-                        kcalContentIn100g = dbDay.kcalContentIn100g ?: 0.0f,
-                        amountInGram = dbDay.amountInGram ?: 0.0f
-                    )
-                )
+                if (dbDay.itemId != null && !(dbDay.isDeleted ?: false)) {
+                    existingDay.items.add(dbDay.toItemFromDay())
+                }
             }
-
         }
         return days
     }
+
+    private fun DayWithItemsDb.toItemFromDay(): ItemFromDay {
+        return ItemFromDay(
+            itemId = this.itemId ?: 0,
+            name = this.name.orEmpty(),
+            proteinContentPercentage = this.proteinContentPercentage ?: 0.0f,
+            kcalContentIn100g = this.kcalContentIn100g ?: 0.0f,
+            amountInGram = this.amountInGram ?: 0.0f
+        )
+    }
+
 }

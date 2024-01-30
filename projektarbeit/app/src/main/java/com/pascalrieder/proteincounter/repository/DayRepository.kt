@@ -9,9 +9,8 @@ import com.pascalrieder.proteincounter.database.dto.DayWithItemsDb
 import com.pascalrieder.proteincounter.database.dto.ItemFromDay
 import com.pascalrieder.proteincounter.database.models.DayItem
 import java.time.LocalDate
-import kotlin.jvm.Throws
 
-class DayRepository(private val dayDao: DayDao) {
+open class DayRepository(private val dayDao: DayDao) {
     private val allDaysWithItems: MediatorLiveData<List<DayWithItems>> = MediatorLiveData()
     private val todayWithItems: MediatorLiveData<DayWithItems> = MediatorLiveData()
     var onTodayNotFound: () -> Unit = {}

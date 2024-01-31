@@ -109,6 +109,6 @@ jobs:
         with:
           name: Android Tests
           path: |
-            projektarbeit/**/TEST-*.xml
+            **/projektarbeit/**/TEST-*.xml
           reporter: java-junit
           fail-on-error: "true"

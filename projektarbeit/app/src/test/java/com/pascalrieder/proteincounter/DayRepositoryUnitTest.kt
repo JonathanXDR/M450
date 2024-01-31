@@ -37,11 +37,9 @@ class DayWithItemUnitTest {
         dayDao = Mockito.mock(DayDao::class.java)
 
         val mockAllDataLiveData = MutableLiveData<List<DayWithItemsDb>>()
-        // Ensure this data matches what your repository expects
         mockAllDataLiveData.value = fakeData.dbDays.value
         Mockito.`when`(dayDao.readAllData()).thenReturn(mockAllDataLiveData)
 
-        // If your repository logic depends on today's date, adjust this as needed
         val mockTodayDataLiveData = MutableLiveData<List<DayWithItemsDb>>()
         Mockito.`when`(dayDao.readDayEntriesFromDate(LocalDate.now())).thenReturn(mockTodayDataLiveData)
 
@@ -52,11 +50,9 @@ class DayWithItemUnitTest {
     fun `Test Get All Days`() {
         val observedData = dayRepository.getDaysWithItems().getOrAwaitValue()
 
-        // Assuming you have 3 items in your fakeData.days and observedData lists
         assertEquals(fakeData.days.size, observedData.size)
         for (i in fakeData.days.indices) {
             assertEquals(fakeData.days[i].date, observedData[i].date)
-            // Add more comparisons for other fields
         }
     }
 }
@@ -112,7 +108,6 @@ fun <T> LiveData<T>.getOrAwaitValue(
     try {
         afterObserve.invoke()
 
-        // Don't wait indefinitely if the LiveData is not set.
         if (!latch.await(time, timeUnit)) {
             throw TimeoutException("LiveData value was never set.")
         }

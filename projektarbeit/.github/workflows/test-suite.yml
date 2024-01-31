@@ -36,10 +36,11 @@ jobs:
       - name: Start Android Emulator
         uses: reactivecircus/android-emulator-runner@v2.30.1
         with:
-          api-level: 31
+          api-level: 34
           arch: x86_64
-          profile: Nexus 6
+          profile: pixel_3a
           script: cd projektarbeit && ./gradlew connectedCheck
+          target: google_apis
 
       - name: Upload Test Results
         if: failure()

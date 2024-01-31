@@ -71,22 +71,22 @@ class FakeData {
     init {
         dbDays.value = listOf(
             DayWithItemsDb(1, LocalDate.now(), null, null, null, null, null, null),
-            DayWithItemsDb(2, LocalDate.now(), 2, "Item2", 20f, 200f, 40f, false),
-            DayWithItemsDb(3, LocalDate.now(), 3, "Item3", 30f, 300f, 60f, false),
+            DayWithItemsDb(2, LocalDate.now().minusDays(1), 2, "Item2", 20f, 200f, 40f, false),
+            DayWithItemsDb(3, LocalDate.now().minusDays(2), 3, "Item3", 30f, 300f, 60f, false),
         )
         days = listOf(
             DayWithItems(
                 1, LocalDate.now(), mutableListOf()
             ),
             DayWithItems(
-                2, LocalDate.now(), mutableListOf(
+                2, LocalDate.now().minusDays(1), mutableListOf(
                     ItemFromDay(
                         2, "Item2", 20f, 200f, 40f
                     )
                 )
             ),
             DayWithItems(
-                3, LocalDate.now(), mutableListOf(
+                3, LocalDate.now().minusDays(2), mutableListOf(
                     ItemFromDay(
                         3, "Item3", 30f, 300f, 60f
                     )

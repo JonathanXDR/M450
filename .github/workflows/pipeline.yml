@@ -12,34 +12,32 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.1
 
-      - name: Set up JDK 21
+      - name: Set Up JDK 21
         uses: actions/setup-java@v4.0.0
         with:
           java-version: "21"
           distribution: "zulu"
 
-      - name: Cache Gradle dependencies
+      - name: Cache Gradle Dependencies
         uses: actions/cache@v4.0.0
         with:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+          restore-keys: ${{ runner.os }}-gradle-
 
-      - name: Grant execute permission for gradlew
+      - name: Grant Execute Permission for Gradlew
         run: chmod +x ./projektarbeit/gradlew
 
       - name: Build APK
         run: cd projektarbeit && ./gradlew assembleDebug
 
-      - name: Upload APK
+      - name: Upload Debug APK
         uses: actions/upload-artifact@v4.3.0
         with:
-          name: App Build Artifacts
-          path: |
-            projektarbeit/app/build/outputs/apk/debug/app-debug.apk
+          name: App Debug APK
+          path: projektarbeit/app/build/outputs/apk/debug/app-debug.apk
 
   test:
     name: Run Tests
@@ -48,13 +46,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4.1.1
 
-      - name: Set up JDK 21
+      - name: Set Up JDK 21
         uses: actions/setup-java@v4.0.0
         with:
           java-version: "21"
           distribution: "zulu"
 
-      - name: Set up Android SDK
+      - name: Set Up Android SDK
         uses: android-actions/setup-android@v3.2.0
 
       - name: Enable KVM
@@ -63,7 +61,7 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
-      - name: Start Android Emulator and Run Tests
+      - name: Build and Run Tests
         uses: reactivecircus/android-emulator-runner@v2.30.1
         with:
           api-level: 34
@@ -72,20 +70,13 @@ jobs:
           target: google_apis
           disable-animations: true
           emulator-boot-timeout: 600
-          script: cd projektarbeit && ./gradlew connectedCheck testDebugUnitTest
+          script: cd projektarbeit && ./gradlew assembleDebug connectedCheck testDebugUnitTest
 
-      - name: Upload Unit Test Results
-        if: always()
+      - name: Upload Test Artifacts
         uses: actions/upload-artifact@v4.3.0
         with:
-          name: Unit Test Results
-          path: projektarbeit/app/build/test-results/testDebugUnitTest/
-      - name: Upload UI Test Results
-        if: always()
-        uses: actions/upload-artifact@v4.3.0
-        with:
-          name: UI Test Results
-          path: projektarbeit/app/build/reports/androidTests/connected/
+          name: Test Artifacts
+          path: projektarbeit/app/build/
 
   report:
     name: Generate Test Report
@@ -94,21 +85,22 @@ jobs:
     permissions:
       contents: read
       checks: write
+
     steps:
       - uses: actions/checkout@v4.1.1
-      - name: Download Unit Test Results Artifact
+
+      - name: Download Test Artifacts
         uses: actions/download-artifact@v4.1.1
         with:
-          name: Unit Test Results
-      - name: Download UI Test Results Artifact
-        uses: actions/download-artifact@v4.1.1
-        with:
-          name: UI Test Results
-      - name: Generate Test Report
+          name: Test Artifacts
+          path: projektarbeit/app/build/
+
+      - name: Create Test Report
         uses: dorny/test-reporter@v1.8.0
         with:
-          name: Android Tests
+          name: Android Test Report
           path: |
-            **/projektarbeit/**/TEST-*.xml
+            projektarbeit/app/build/reports/tests/testDebugUnitTest/
+            projektarbeit/app/build/reports/androidTests/connected/debug/
           reporter: java-junit
           fail-on-error: "true"

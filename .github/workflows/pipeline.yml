@@ -1,0 +1,104 @@
+name: Android CI/CD Pipeline
+
+on:
+  push:
+    branches: [main, develop]
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build Project
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set Up JDK 21
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: 21
+          distribution: zulu
+
+      - name: Cache Gradle Dependencies
+        uses: actions/cache@v4.0.0
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: ${{ runner.os }}-gradle-
+
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x ./projektarbeit/gradlew
+
+      - name: Build APK
+        run: cd projektarbeit && ./gradlew assembleDebug
+
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4.3.0
+        with:
+          name: App Debug APK
+          path: projektarbeit/app/build/outputs/apk/debug/app-debug.apk
+
+  test:
+    name: Run Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Set Up JDK 21
+        uses: actions/setup-java@v4.0.0
+        with:
+          java-version: 21
+          distribution: zulu
+
+      - name: Set Up Android SDK
+        uses: android-actions/setup-android@v3.2.0
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Build and Run Tests
+        uses: reactivecircus/android-emulator-runner@v2.30.1
+        with:
+          api-level: 34
+          arch: x86_64
+          profile: pixel_3a
+          target: google_apis
+          disable-animations: true
+          emulator-boot-timeout: 600
+          script: cd projektarbeit && ./gradlew assembleDebug connectedCheck testDebugUnitTest
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4.3.0
+        with:
+          name: Build Artifacts
+          path: projektarbeit/app/build/
+
+  report:
+    name: Generate Test Report
+    needs: test
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
+
+    steps:
+      - uses: actions/checkout@v4.1.1
+
+      - name: Download Build Artifacts
+        uses: actions/download-artifact@v4.1.1
+        with:
+          name: Build Artifacts
+          path: projektarbeit/app/build/
+
+      - name: Create Test Report
+        uses: dorny/test-reporter@v1.8.0
+        with:
+          name: Android Test Report
+          path: |
+            **/projektarbeit/**/TEST-*.xml
+          reporter: java-junit
+          fail-on-error: false

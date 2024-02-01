@@ -33,7 +33,7 @@ open class DayRepository(private val dayDao: DayDao) {
 
     fun getToday(onDayNotFound: () -> Unit = {}): LiveData<DayWithItems> {
         onTodayNotFound = onDayNotFound
-        return todayWithItems;
+        return todayWithItems
     }
 
     suspend fun removeItemFromDay(dayId: Long, itemId: Long) {
@@ -65,12 +65,12 @@ open class DayRepository(private val dayDao: DayDao) {
 
             if (existingDay == null) {
                 val newDay = DayWithItems(dbDay.dayId, dbDay.date, mutableListOf())
-                if (dbDay.itemId != null && !(dbDay.isDeleted ?: false)) {
+                if (dbDay.itemId != null && dbDay.isDeleted != true) {
                     newDay.items.add(dbDay.toItemFromDay())
                 }
                 days.add(newDay)
             } else {
-                if (dbDay.itemId != null && !(dbDay.isDeleted ?: false)) {
+                if (dbDay.itemId != null && dbDay.isDeleted != true) {
                     existingDay.items.add(dbDay.toItemFromDay())
                 }
             }

@@ -229,7 +229,7 @@ fun TodayView(viewModel: TodayViewModel) {
                     text = {
                         Text(
 
-                            "You've consumed ${viewModel.proteinGoal.toString()} g of Protein.",
+                            "You've consumed ${viewModel.proteinGoal} g of Protein.",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -245,7 +245,7 @@ fun TodayView(viewModel: TodayViewModel) {
                     title = { Text(style = MaterialTheme.typography.titleMedium, text = "Kcal") },
                     text = {
                         Text(
-                            "You've consumed ${viewModel.kcalGoal.toString()} Kcal.",
+                            "You've consumed ${viewModel.kcalGoal} Kcal.",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     },
@@ -415,12 +415,12 @@ fun CalculationGraph(factor: Float, dividend: Float) {
                 style = MaterialTheme.typography.bodyMedium,
                 text = String.format("%.1f", dividend).replace(".0", "") + "g"
             )
-            Divider(
-                color = MaterialTheme.colorScheme.primary,
-                thickness = 1.dp,
+            HorizontalDivider(
                 modifier = Modifier
                     .width(30.dp)
-                    .padding(top = 3.dp)
+                    .padding(top = 3.dp),
+                thickness = 1.dp,
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 style = MaterialTheme.typography.bodyMedium,

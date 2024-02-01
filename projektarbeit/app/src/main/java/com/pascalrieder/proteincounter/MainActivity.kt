@@ -23,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModelProvider
@@ -49,6 +50,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 class MainActivity : ComponentActivity() {
+    val itemsViewModel : ItemsViewModel by lazy {
+        ViewModelProvider(this).get(ItemsViewModel::class.java)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         insertItems()
@@ -63,7 +68,6 @@ class MainActivity : ComponentActivity() {
 
                     val todayViewModel = ViewModelProvider(this).get(TodayViewModel::class.java)
                     val historyViewModel = ViewModelProvider(this).get(HistoryViewModel::class.java)
-                    val itemsViewModel = ViewModelProvider(this).get(ItemsViewModel::class.java)
 
                     Scaffold(content = { padding ->
                         Column(
@@ -161,7 +165,7 @@ private fun BottomBar(navController: NavHostController) {
         }, label = { Text("History") }, selected = selectedItem == 1, onClick = {
             selectedItem = 1
             navController.navigate("history")
-        })
+        }, modifier = Modifier.testTag("history"))
         NavigationBarItem(icon = {
             Icon(
                 painter = painterResource(R.drawable.ic_list), contentDescription = "Items"
@@ -169,7 +173,7 @@ private fun BottomBar(navController: NavHostController) {
         }, label = { Text("Items") }, selected = selectedItem == 2, onClick = {
             selectedItem = 2
             navController.navigate("items")
-        })
+        }, modifier = Modifier.testTag("items"))
     }
 }
 

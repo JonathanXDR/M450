@@ -14,6 +14,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -103,7 +104,7 @@ fun Item(item: Item, onDelete: () -> Unit = {}) {
                 style = MaterialTheme.typography.headlineSmall
             )
             IconButton(
-                onClick = { expanded.value = !expanded.value }, modifier = Modifier.size(24.dp)
+                onClick = { expanded.value = !expanded.value }, modifier = Modifier.size(24.dp).testTag("btn_expand_item")
             ) {
                 Icon(
                     imageVector = if (expanded.value) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,

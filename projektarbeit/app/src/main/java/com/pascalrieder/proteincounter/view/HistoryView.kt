@@ -24,6 +24,7 @@ import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -94,7 +95,7 @@ fun HistoryView(viewModel: HistoryViewModel) {
                 IconButton(
                     onClick = {
                         viewModel.createBackup(context)
-                    }, modifier = Modifier
+                    }, modifier = Modifier.testTag("btn_create_backup")
                 ) {
                     Icon(
                         painter = painterResource(

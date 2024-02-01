@@ -61,7 +61,7 @@ fun TodayView(viewModel: TodayViewModel) {
                         contentDescription = "Search Icon"
                     )
                     Spacer(modifier = Modifier.width(12.dp))
-                    OutlinedTextField(modifier = Modifier.fillMaxWidth(),
+                    OutlinedTextField(modifier = Modifier.fillMaxWidth().testTag("consumedAmount"),
                         label = { Text(text = "Consumed amount in gram") },
                         value = viewModel.amountInGram,
                         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
@@ -107,7 +107,7 @@ fun TodayView(viewModel: TodayViewModel) {
                             .padding(24.dp)
                             .clickable {
                                 viewModel.insertItemClick(item.uid)
-                            }) {
+                            }.testTag("item_${item.uid}")) {
                             Text(
                                 style = MaterialTheme.typography.headlineSmall,
                                 text = item.name,
@@ -337,7 +337,7 @@ fun ItemView(item: ItemFromDay, onDelete: () -> Unit = {}) {
                     modifier = Modifier.alpha(0.5f)
                 )
             }
-            IconButton(onClick = { isExpanded = !isExpanded }, modifier = Modifier.size(24.dp)) {
+            IconButton(onClick = { isExpanded = !isExpanded }, modifier = Modifier.size(24.dp).testTag("btn_expand_item_${item.itemId}")) {
                 Icon(
                     imageVector = if (isExpanded) Icons.Default.KeyboardArrowUp else Icons.Default.KeyboardArrowDown,
                     contentDescription = "Expand Icon"
@@ -379,7 +379,7 @@ fun ItemView(item: ItemFromDay, onDelete: () -> Unit = {}) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier
                 .clickable {
                     onDelete()
-                }
+                }.testTag("btn_delete_item_${item.itemId}")
                 .height(40.dp)) {
                 Icon(
                     painter = painterResource(R.drawable.ic_delete),
